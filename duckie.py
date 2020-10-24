@@ -13,7 +13,7 @@ from utils import VideoCapture
 import cv2, queue, threading, time
 from dagu_wheels_driver import DaguWheelsDriver
 
-with RealTimeCommunication("rpi") as rtcom:
+with RealTimeCommunication("duckie") as rtcom:
     cap = VideoCapture(0)
     first_pass = True 
     data = {}
@@ -29,8 +29,10 @@ with RealTimeCommunication("rpi") as rtcom:
         ret, jpg_image = cv2.imencode("*.jpg",frame, encode_param)
         rtcom.broadcast_endpoint("camera", bytes(jpg_image), encoding="binary")
         rtcom.broadcast_endpoint("data",data)
-        if "pc" in rtcom and "keys" in rtcom["pc"]:
-            keys = rtcom["pc"]["keys"]
-            print(keys)
+        if "pc" in rtcom and "speed" in rtcom["pc"]:
+            left_speed = rtcom["pc"]["speed"]["left"]
+            right_speed = rtcom["pc"]["speed"]["right"]
+            wheels.setWheelsSpeed(left_speed, right_speed)            
+            print(left_speed, right_speed)
 
         
