@@ -16,7 +16,8 @@ with RealTimeCommunication("pc") as rtcom:
     running = True
     last_speed=None
     i=0
-    while True:
+    running = True
+    while running:
         i+=1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -53,9 +54,15 @@ with RealTimeCommunication("pc") as rtcom:
                 speed["right"] += 0.5
             if pressed[pygame.K_d]:
                 speed["left"]  += 0.5
+            if pressed[pygame.K_SPACE]:
+                speed["left"] *= 2
+                speed["right"] *= 2
+
+            if pressed[pygame.K_ESCAPE]:
+                running=False
 
             if i%40==0:
-                print("speed", speed)
+                #print("speed", speed)
                 rtcom.broadcast_endpoint("speed", speed)    
 
             if speed!=last_speed:
